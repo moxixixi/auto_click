@@ -7,6 +7,7 @@ std::vector<Process> processes;
 ffxiv_assistant::ffxiv_assistant(QWidget *parent)
 	: QWidget(parent)
 	, m_pHook(nullptr)
+	, m_pDoAction(nullptr)
 {
 	ui.setupUi(this);
 
@@ -25,7 +26,8 @@ void ffxiv_assistant::init()
 	updateStatus(Wait);
 	// hook
 	auto func = std::bind(&ffxiv_assistant::HookMouseProc, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
-	m_pHook = new CHook(func);
+	m_pHook = new (std::nothrow)CHook(func);
+	m_pDoAction = new (std::nothrow)CDoAction();
 }
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
@@ -150,11 +152,17 @@ void ffxiv_assistant::recordAction(bool bStart)
 		tmp.y = 0;
 		tmp._time = ::GetTickCount64();
 		m_vecPosinfo.push_back(tmp);
-		m_pHook->StartHook();
+		if (nullptr != m_pHook)
+		{
+			m_pHook->StartHook();
+		}
 	}
 	else
 	{	// end
-		m_pHook->EndHook();
+		if (nullptr != m_pHook)
+		{
+			m_pHook->EndHook();
+		}
 	}
 }
 
@@ -162,10 +170,20 @@ void ffxiv_assistant::doAction(bool bStart)
 {
 	if (bStart)
 	{	// start
+		if (nullptr != m_pDoAction &&
+			m_vecPosinfo.size() > 1 &&
+			ui.comboBox->count() > 0 &&
+			processes.size() > ui.comboBox->currentIndex())
+		{
+			m_pDoAction->StartAction(m_vecPosinfo, processes[ui.comboBox->currentIndex()].hWnd);
+		}
 	}
 	else
 	{	// end
-
+		if (nullptr != m_pDoAction)
+		{
+			m_pDoAction->EndAction();
+		}
 	}
 }
 

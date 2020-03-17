@@ -5,6 +5,7 @@
 #include "struct_def.h"
 #include <vector>
 #include "Hook.h"
+#include "DoAction.h"
 
 class ffxiv_assistant : public QWidget
 {
@@ -29,4 +30,5 @@ private:
 private:
 	std::vector<StatusInfo> m_vecPosinfo;
 	CHook* m_pHook;
+	CDoAction* m_pDoAction;
 };
