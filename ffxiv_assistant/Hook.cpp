@@ -19,7 +19,6 @@ LRESULT CALLBACK CHook::HookMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
     {
         PMOUSEHOOKSTRUCT p = (PMOUSEHOOKSTRUCT)lParam;
         POINT pt = p->pt;
-        ::ScreenToClient(p->hwnd, &pt);
         if (nullptr != cb)
         {
             cb(pt.x, pt.y, ::GetTickCount64());

@@ -35,13 +35,16 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
 	DWORD pid = (DWORD)lParam;
 	DWORD dwProcessID = 0;
 	::GetWindowThreadProcessId(hwnd, &dwProcessID);
-	if (dwProcessID == pid &&
-		IsWindow(hwnd) &&
-		NULL == GetParent(hwnd))
+	if (dwProcessID == pid
+		&& IsWindow(hwnd)
+		&& NULL == GetParent(hwnd)
+		)
 	{
+#if 1
 		char buf[256] = { 0 };
 		GetWindowTextA(hwnd, buf, 256);
 		if (strcmp(buf, "×îÖÕ»ÃÏëXIV") == 0)
+#endif
 		{
 			Process tmp;
 			tmp.nPid = dwProcessID;
@@ -62,8 +65,12 @@ void ffxiv_assistant::enumProcess()
 	BOOL bFind = Process32First(hProcessSnap, &pe32);
 	while (bFind)
 	{
+#if 1
 		if (strcmp("ffxiv_dx11.exe", pe32.szExeFile) == 0 ||
 			strcmp("ffxiv.exe", pe32.szExeFile) == 0)
+#else
+		if (strcmp("notepad++.exe", pe32.szExeFile) == 0)
+#endif
 		{
 			EnumWindows(EnumWindowsProc, (DWORD)pe32.th32ProcessID);
 		}
@@ -95,6 +102,7 @@ void ffxiv_assistant::connectSignalAndSlot()
 		ui.kRecord_start->setEnabled(false);
 		ui.kRecord_end->setEnabled(true);
 		updateStatus(Recording);
+		ActiveTop(true);
 		recordAction(true);
 		
 	});
@@ -102,6 +110,7 @@ void ffxiv_assistant::connectSignalAndSlot()
 		ui.kRecord_start->setEnabled(true);
 		ui.kRecord_end->setEnabled(false);
 		updateStatus(Recorded);
+		ActiveTop(false);
 		recordAction(false);
 	});
 	connect(ui.kDo_start, &QPushButton::clicked, [=]() {
@@ -163,6 +172,10 @@ void ffxiv_assistant::recordAction(bool bStart)
 		{
 			m_pHook->EndHook();
 		}
+		if (m_vecPosinfo.size() >= 2)
+		{
+			ui.kDo_start->setEnabled(true);
+		}
 	}
 }
 
@@ -194,4 +207,13 @@ void ffxiv_assistant::HookMouseProc(int x, int y, ULONGLONG _time)
 	tmp.y = y;
 	tmp._time = _time;
 	m_vecPosinfo.push_back(tmp);
+	char buf[256] = { 0 };
+	sprintf_s(buf, 256, "[add pos] x: %d, y: %d\n", tmp.x, tmp.y);
+	OutputDebugString(buf);
+}
+
+void ffxiv_assistant::ActiveTop(bool bTop)
+{
+	setWindowFlag(Qt::WindowStaysOnTopHint, bTop);
+	this->showNormal();
 }

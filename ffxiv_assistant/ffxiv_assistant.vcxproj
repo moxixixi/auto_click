@@ -99,6 +99,7 @@
       <AdditionalLibraryDirectories>$(QTDIR)\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmain.lib;Qt5Core.lib;Qt5Gui.lib;Qt5Widgets.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <QtMoc>
       <OutputFile>.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</OutputFile>
@@ -116,7 +117,9 @@
     </QtRcc>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DoAction.cpp" />
     <ClCompile Include="ffxiv_assistant.cpp" />
+    <ClCompile Include="Hook.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +132,8 @@
     <QtRcc Include="ffxiv_assistant.qrc" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DoAction.h" />
+    <ClInclude Include="Hook.h" />
     <ClInclude Include="struct_def.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

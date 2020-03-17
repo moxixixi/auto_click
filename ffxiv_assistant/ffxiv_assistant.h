@@ -23,6 +23,7 @@ private:
 	void recordAction(bool bStart);
 	void doAction(bool bStart);
 	void HookMouseProc(int x, int y, ULONGLONG _time);
+	void ActiveTop(bool bTop);
 
 private:
 	Ui::ffxiv_assistantClass ui;

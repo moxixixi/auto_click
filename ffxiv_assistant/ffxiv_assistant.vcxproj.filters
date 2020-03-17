@@ -36,10 +36,10 @@
     <ClCompile Include="ffxiv_assistant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Hook.cpp">
+    <ClCompile Include="DoAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="DoAction.cpp">
+    <ClCompile Include="Hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -62,10 +62,10 @@
     <ClInclude Include="struct_def.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Hook.h">
+    <ClInclude Include="DoAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="DoAction.h">
+    <ClInclude Include="Hook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
