@@ -21,5 +21,5 @@ typedef struct tagStatusInfo
 {
 	int x;
 	int y;
-	time_t _time;
+	ULONGLONG _time;
 }StatusInfo;

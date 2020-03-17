@@ -6,6 +6,7 @@ std::vector<Process> processes;
 
 ffxiv_assistant::ffxiv_assistant(QWidget *parent)
 	: QWidget(parent)
+	, m_pHook(nullptr)
 {
 	ui.setupUi(this);
 
@@ -22,6 +23,9 @@ void ffxiv_assistant::init()
 	connectSignalAndSlot();
 	// status
 	updateStatus(Wait);
+	// hook
+	auto func = std::bind(&ffxiv_assistant::HookMouseProc, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	m_pHook = new CHook(func);
 }
 
 BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
@@ -90,6 +94,7 @@ void ffxiv_assistant::connectSignalAndSlot()
 		ui.kRecord_end->setEnabled(true);
 		updateStatus(Recording);
 		recordAction(true);
+		
 	});
 	connect(ui.kRecord_end, &QPushButton::clicked, [=]() {
 		ui.kRecord_start->setEnabled(true);
@@ -140,10 +145,16 @@ void ffxiv_assistant::recordAction(bool bStart)
 	if (bStart)
 	{	// start
 		m_vecPosinfo.clear();
+		StatusInfo tmp;
+		tmp.x = 0;
+		tmp.y = 0;
+		tmp._time = ::GetTickCount64();
+		m_vecPosinfo.push_back(tmp);
+		m_pHook->StartHook();
 	}
 	else
 	{	// end
-
+		m_pHook->EndHook();
 	}
 }
 
@@ -156,4 +167,13 @@ void ffxiv_assistant::doAction(bool bStart)
 	{	// end
 
 	}
+}
+
+void ffxiv_assistant::HookMouseProc(int x, int y, ULONGLONG _time)
+{
+	StatusInfo tmp;
+	tmp.x = x;
+	tmp.y = y;
+	tmp._time = _time;
+	m_vecPosinfo.push_back(tmp);
 }
