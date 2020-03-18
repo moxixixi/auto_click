@@ -22,7 +22,7 @@ private:
 	void updateStatus(Status _status);
 	void recordAction(bool bStart);
 	void doAction(bool bStart);
-	void HookMouseProc(int x, int y, ULONGLONG _time);
+	void HookKeyProc(int nKeyId, ULONGLONG _time);
 	void ActiveTop(bool bTop);
 
 private:

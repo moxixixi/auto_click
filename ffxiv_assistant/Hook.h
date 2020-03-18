@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <functional>
 
-typedef std::function<void(int x, int y, ULONGLONG _time)> pHookMouseProc;
+typedef std::function<void(int nKeyId, ULONGLONG _time)> pHookMouseProc;
 
 class CHook
 {
@@ -16,5 +16,5 @@ public:
 	void EndHook();
 
 private:
-	static LRESULT CALLBACK HookMouseProc(int nCode, WPARAM wParam, LPARAM lParam);
+	static LRESULT CALLBACK HookKeyProc(int nCode, WPARAM wParam, LPARAM lParam);
 };

@@ -19,7 +19,6 @@ enum Status
 
 typedef struct tagStatusInfo
 {
-	int x;
-	int y;
+	int nKeyId;
 	ULONGLONG _time;
 }StatusInfo;

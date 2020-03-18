@@ -1,4 +1,5 @@
 #include "DoAction.h"
+#include <functional>
 
 CDoAction::CDoAction()
 	: m_posinfo()
@@ -45,18 +46,13 @@ void CDoAction::run()
 				{
 					if (i == (m_posinfo.size() - 1))
 					{
-						//break;
+						break;
 					}
-					POINT pt;
-					pt.x = m_posinfo[i].x;
-					pt.y = m_posinfo[i].y;
-					::ScreenToClient(m_hWnd, &pt);
-					LPARAM point = MAKELPARAM(pt.x, pt.y);
-					::PostMessage(m_hWnd, WM_LBUTTONDOWN, MK_LBUTTON, point);
-					::PostMessage(m_hWnd, WM_LBUTTONUP, 0, point);
+					::PostMessage(m_hWnd, WM_KEYDOWN, m_posinfo[i].nKeyId, 1);
+					::PostMessage(m_hWnd, WM_KEYUP, m_posinfo[i].nKeyId, 1);
 
 					char buf[256] = { 0 };
-					sprintf_s(buf, 256, "[post pos] x: %d, y: %d\n", pt.x, pt.y);
+					sprintf_s(buf, 256, "[post key] key: %d\n", m_posinfo[i].nKeyId);
 					OutputDebugString(buf);
 
 					break;

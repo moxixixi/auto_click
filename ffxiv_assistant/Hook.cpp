@@ -13,15 +13,15 @@ CHook::~CHook()
 {
 }
 
-LRESULT CALLBACK CHook::HookMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK CHook::HookKeyProc(int nCode, WPARAM wParam, LPARAM lParam)
 {
-    if (wParam == WM_LBUTTONUP)
+    if (wParam == WM_KEYUP)
     {
-        PMOUSEHOOKSTRUCT p = (PMOUSEHOOKSTRUCT)lParam;
-        POINT pt = p->pt;
-        if (nullptr != cb)
+        PKBDLLHOOKSTRUCT p = (PKBDLLHOOKSTRUCT)lParam;
+        if (nullptr != p &&
+            nullptr != cb)
         {
-            cb(pt.x, pt.y, ::GetTickCount64());
+            cb(p->vkCode, ::GetTickCount64());
         }
     }
 
@@ -30,7 +30,7 @@ LRESULT CALLBACK CHook::HookMouseProc(int nCode, WPARAM wParam, LPARAM lParam)
 
 void CHook::StartHook()
 {
-    hook_hanlde = SetWindowsHookEx(WH_MOUSE_LL, CHook::HookMouseProc, ::GetModuleHandle(NULL), 0);
+    hook_hanlde = SetWindowsHookEx(WH_KEYBOARD_LL, CHook::HookKeyProc, ::GetModuleHandle(NULL), 0);
 
     return;
 }

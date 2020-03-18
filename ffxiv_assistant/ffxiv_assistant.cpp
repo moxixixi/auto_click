@@ -25,7 +25,7 @@ void ffxiv_assistant::init()
 	// status
 	updateStatus(Wait);
 	// hook
-	auto func = std::bind(&ffxiv_assistant::HookMouseProc, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3);
+	auto func = std::bind(&ffxiv_assistant::HookKeyProc, this, std::placeholders::_1, std::placeholders::_2);
 	m_pHook = new (std::nothrow)CHook(func);
 	m_pDoAction = new (std::nothrow)CDoAction();
 }
@@ -40,7 +40,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
 		&& NULL == GetParent(hwnd)
 		)
 	{
-#if 1
+#ifndef DEMO_TEST
 		char buf[256] = { 0 };
 		GetWindowTextA(hwnd, buf, 256);
 		if (strcmp(buf, "×îÖÕ»ÃÏëXIV") == 0)
@@ -65,7 +65,7 @@ void ffxiv_assistant::enumProcess()
 	BOOL bFind = Process32First(hProcessSnap, &pe32);
 	while (bFind)
 	{
-#if 1
+#ifndef DEMO_TEST
 		if (strcmp("ffxiv_dx11.exe", pe32.szExeFile) == 0 ||
 			strcmp("ffxiv.exe", pe32.szExeFile) == 0)
 #else
@@ -157,8 +157,7 @@ void ffxiv_assistant::recordAction(bool bStart)
 	{	// start
 		m_vecPosinfo.clear();
 		StatusInfo tmp;
-		tmp.x = 0;
-		tmp.y = 0;
+		tmp.nKeyId = -1;
 		tmp._time = ::GetTickCount64();
 		m_vecPosinfo.push_back(tmp);
 		if (nullptr != m_pHook)
@@ -174,6 +173,11 @@ void ffxiv_assistant::recordAction(bool bStart)
 		}
 		if (m_vecPosinfo.size() >= 2)
 		{
+			StatusInfo tmp;
+			tmp.nKeyId = -1;
+			tmp._time = ::GetTickCount64();
+			m_vecPosinfo.push_back(tmp);
+
 			ui.kDo_start->setEnabled(true);
 		}
 	}
@@ -200,15 +204,14 @@ void ffxiv_assistant::doAction(bool bStart)
 	}
 }
 
-void ffxiv_assistant::HookMouseProc(int x, int y, ULONGLONG _time)
+void ffxiv_assistant::HookKeyProc(int nKeyId, ULONGLONG _time)
 {
 	StatusInfo tmp;
-	tmp.x = x;
-	tmp.y = y;
+	tmp.nKeyId = nKeyId;
 	tmp._time = _time;
 	m_vecPosinfo.push_back(tmp);
 	char buf[256] = { 0 };
-	sprintf_s(buf, 256, "[add pos] x: %d, y: %d\n", tmp.x, tmp.y);
+	sprintf_s(buf, 256, "[add key record] key: %d\n", tmp.nKeyId);
 	OutputDebugString(buf);
 }
 
